@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">Короткий кустик — круглый</title>
+  
+<defs>
+  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#43B58C"/>
+    <stop offset=".55" stop-color="#16866B"/>
+    <stop offset="1" stop-color="#0B5D4B"/>
+  </linearGradient>
+  <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#9BCB55"/>
+    <stop offset=".55" stop-color="#43B58C"/>
+    <stop offset="1" stop-color="#16866B"/>
+  </linearGradient>
+  <linearGradient id="g3" x1="1" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#A9D45A"/>
+    <stop offset=".5" stop-color="#6F8F3D"/>
+    <stop offset="1" stop-color="#16866B"/>
+  </linearGradient>
+  <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9BCB55"/>
+    <stop offset=".55" stop-color="#6F8F3D"/>
+    <stop offset="1" stop-color="#0B5D4B"/>
+  </linearGradient>
+</defs>
+
+  <ellipse cx="128" cy="236" rx="49" ry="8" fill="#0A4438" opacity=".2"/>
+<path d="M128 236 C126 211 127 191 129 164" stroke="#0E6A55" stroke-width="9" stroke-linecap="round"/>
+<path d="M129 201 C114 188 106 175 103 158" stroke="#16866B" stroke-width="8" stroke-linecap="round"/>
+<path d="M129 194 C145 181 153 166 156 149" stroke="#16866B" stroke-width="8" stroke-linecap="round"/>
+<path d="M119 184 C103 175 91 160 88 143" stroke="#43B58C" stroke-width="7" stroke-linecap="round"/>
+<path d="M139 181 C157 168 166 155 170 137" stroke="#43B58C" stroke-width="7" stroke-linecap="round"/>
+<path d="M111 168 C101 153 98 139 101 124" stroke="#6F8F3D" stroke-width="7" stroke-linecap="round"/>
+<path d="M147 163 C155 146 158 132 154 117" stroke="#6F8F3D" stroke-width="7" stroke-linecap="round"/>
+<circle cx="88" cy="142" r="5" fill="#9BCB55"/>
+<circle cx="170" cy="136" r="5" fill="#9BCB55"/>
+</svg>

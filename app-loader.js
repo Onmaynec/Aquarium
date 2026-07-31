@@ -1,0 +1,1 @@
+(()=>{const p=['app-1.part','app-2.part','app-3.part','app-4.part','app-5.part'];Promise.all(p.map(x=>fetch(x).then(r=>{if(!r.ok)throw new Error(x);return r.text()}))).then(a=>{const s=document.createElement('script');s.textContent=a.join('');document.body.appendChild(s)}).catch(console.error)})();

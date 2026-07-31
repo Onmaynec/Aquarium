@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">Ламинария — веер</title>
+  
+<defs>
+  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#43B58C"/>
+    <stop offset=".55" stop-color="#16866B"/>
+    <stop offset="1" stop-color="#0B5D4B"/>
+  </linearGradient>
+  <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#9BCB55"/>
+    <stop offset=".55" stop-color="#43B58C"/>
+    <stop offset="1" stop-color="#16866B"/>
+  </linearGradient>
+  <linearGradient id="g3" x1="1" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#A9D45A"/>
+    <stop offset=".5" stop-color="#6F8F3D"/>
+    <stop offset="1" stop-color="#16866B"/>
+  </linearGradient>
+  <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9BCB55"/>
+    <stop offset=".55" stop-color="#6F8F3D"/>
+    <stop offset="1" stop-color="#0B5D4B"/>
+  </linearGradient>
+</defs>
+
+  <ellipse cx="128" cy="236" rx="50" ry="9" fill="#0A4438" opacity=".22"/>
+<path d="M106 236 C95 202 88 174 92 146 C96 119 85 92 91 62
+         C94 46 105 42 113 54 C124 72 110 99 112 122
+         C115 157 129 191 124 236 Z" fill="url(#g4)"/>
+<path d="M122 236 C116 194 119 164 116 133 C112 103 118 69 134 38
+         C142 22 156 22 160 37
+         C166 58 144 82 141 110
+         C137 146 147 188 143 236 Z" fill="url(#g1)"/>
+<path d="M141 236 C145 203 156 183 166 159 C178 132 174 103 167 76
+         C162 56 174 42 186 50
+         C204 62 191 92 191 114
+         C192 149 171 174 161 198
+         C155 214 155 224 157 236 Z" fill="url(#g3)"/>
+</svg>

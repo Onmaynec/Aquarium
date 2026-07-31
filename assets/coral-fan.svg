@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">Коралловидная форма — веер</title>
+  
+<defs>
+  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#43B58C"/>
+    <stop offset=".55" stop-color="#16866B"/>
+    <stop offset="1" stop-color="#0B5D4B"/>
+  </linearGradient>
+  <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#9BCB55"/>
+    <stop offset=".55" stop-color="#43B58C"/>
+    <stop offset="1" stop-color="#16866B"/>
+  </linearGradient>
+  <linearGradient id="g3" x1="1" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#A9D45A"/>
+    <stop offset=".5" stop-color="#6F8F3D"/>
+    <stop offset="1" stop-color="#16866B"/>
+  </linearGradient>
+  <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9BCB55"/>
+    <stop offset=".55" stop-color="#6F8F3D"/>
+    <stop offset="1" stop-color="#0B5D4B"/>
+  </linearGradient>
+</defs>
+
+  <ellipse cx="128" cy="236" rx="48" ry="8" fill="#4A2630" opacity=".16"/>
+<g fill="none" stroke-linecap="round">
+  <path d="M128 236 C125 205 116 183 102 160 C91 142 87 124 89 106" stroke="#B84F6A" stroke-width="7"/>
+  <path d="M129 236 C130 207 137 182 150 159 C160 141 166 124 165 106" stroke="#B84F6A" stroke-width="7"/>
+  <path d="M125 210 C104 198 91 183 83 164" stroke="#D56B62" stroke-width="6"/>
+  <path d="M134 207 C155 196 170 180 178 159" stroke="#D56B62" stroke-width="6"/>
+  <path d="M116 190 C105 174 101 157 101 139" stroke="#E18B7F" stroke-width="5"/>
+  <path d="M141 189 C152 172 155 155 154 137" stroke="#E18B7F" stroke-width="5"/>
+  <path d="M105 174 C94 165 86 155 82 144" stroke="#B84F6A" stroke-width="5"/>
+  <path d="M151 173 C164 164 173 153 178 141" stroke="#B84F6A" stroke-width="5"/>
+</g>
+<g fill="#E6A091">
+  <circle cx="89" cy="106" r="5"/>
+  <circle cx="165" cy="106" r="5"/>
+  <circle cx="83" cy="164" r="5"/>
+  <circle cx="178" cy="159" r="5"/>
+  <circle cx="82" cy="144" r="5"/>
+  <circle cx="178" cy="141" r="5"/>
+</g>
+</svg>
