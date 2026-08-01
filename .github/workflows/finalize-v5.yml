@@ -3,13 +3,17 @@ name: Finalize V5 Release
 on:
   issue_comment:
     types: [created]
+  pull_request_target:
+    types: [opened, reopened, synchronize]
 
 permissions:
   contents: write
 
 jobs:
   finalize:
-    if: github.event.issue.pull_request && github.event.issue.number == 3 && github.event.comment.body == '/finalize-v5.0.0'
+    if: >-
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && github.event.issue.number == 3 && github.event.comment.body == '/finalize-v5.0.0') ||
+      (github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'agent/finalize-v5-release' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
