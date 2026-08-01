@@ -18,48 +18,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify and extract source payload
+      - name: Verify and extract V5 overlay
         shell: bash
         run: |
           set -euo pipefail
-          cat .bootstrap/payload.part* > /tmp/aquarium-v5.b64
-          echo 'c3a608f8e79032b98df3bd3cca7daefd1e49b1b412ec412150cd97007adedc4f  /tmp/aquarium-v5.b64' | sha256sum -c -
+          cat .bootstrap/chunk.* > /tmp/aquarium-v5.b64
+          echo '5217e7c0f16be463d6cd08b6cc32db71db7d1f26bb1bab88cb44cf0cf439d47f  /tmp/aquarium-v5.b64' | sha256sum -c -
           base64 -d /tmp/aquarium-v5.b64 > /tmp/aquarium-v5.tar.gz
-          echo 'cd21e15ed4a6e0d0432ebe220f8fc7152f1ce0633d59401ba7427aefd55f47e5  /tmp/aquarium-v5.tar.gz' | sha256sum -c -
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.bootstrap' -exec rm -rf {} +
+          echo 'df8088ce14337fdc51de1eec968820c887615a0d65690ebfc504de2f2efe5951  /tmp/aquarium-v5.tar.gz' | sha256sum -c -
           tar -xzf /tmp/aquarium-v5.tar.gz
 
-      - name: Restore embedded source assets
+      - name: Generate PWA icons
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import base64, json, struct, zlib
+          import struct, zlib
           from pathlib import Path
-
-          root = Path('.')
-          raw = (root / 'assets/manifest.js').read_text(encoding='utf-8').strip()
-          prefix = 'window.AQUARIUM_MANIFEST='
-          if not raw.startswith(prefix):
-              raise SystemExit('Invalid embedded manifest prefix')
-          embedded = json.loads(raw[len(prefix):].rstrip(';'))
-          external = json.loads((root / 'assets/manifest.json').read_text(encoding='utf-8'))
-
-          def decode_data_uri(uri, target):
-              if not isinstance(uri, str) or not uri.startswith('data:'):
-                  return
-              header, payload = uri.split(',', 1)
-              data = base64.b64decode(payload) if ';base64' in header else payload.encode('utf-8')
-              path = root / target
-              path.parent.mkdir(parents=True, exist_ok=True)
-              path.write_bytes(data)
-
-          for key, value in embedded['atlases'].items():
-              decode_data_uri(value['file'], external['atlases'][key]['file'])
-          for key, value in embedded['images'].items():
-              decode_data_uri(value, external['images'][key])
-          for key, value in embedded['audio'].items():
-              decode_data_uri(value, external['audio'][key])
 
           def write_png(size, path):
               rows = []
@@ -86,8 +61,9 @@ jobs:
               png = b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', size, size, 8, 6, 0, 0, 0)) + chunk(b'IDAT', zlib.compress(data, 9)) + chunk(b'IEND', b'')
               Path(path).write_bytes(png)
 
-          write_png(192, root / 'assets/icon-192.png')
-          write_png(512, root / 'assets/icon-512.png')
+          Path('assets').mkdir(exist_ok=True)
+          write_png(192, 'assets/icon-192.png')
+          write_png(512, 'assets/icon-512.png')
           PY
 
       - name: Validate materialized project
