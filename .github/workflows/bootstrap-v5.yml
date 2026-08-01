@@ -71,6 +71,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf .bootstrap
+          rm -f .github/workflows/bootstrap-v5.yml
           test "$(cat VERSION)" = '5.0.0'
           node --check app.js
           node --check assets/manifest.js
