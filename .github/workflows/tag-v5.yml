@@ -1,0 +1,23 @@
+name: Tag V5 Release
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  tag:
+    if: startsWith(github.event.head_commit.message, 'Release Living Aquarium V5 Evolution')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create v5.0.0 tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --tags origin refs/tags/v5.0.0 >/dev/null 2>&1; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a v5.0.0 -m 'Living Aquarium V5 Evolution'
+          git push origin v5.0.0

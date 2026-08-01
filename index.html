@@ -1,50 +1,33 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#031d35">
-<meta name="description" content="Living Aquarium V3 — красивый интерактивный аквариум, который запускается двойным кликом без локального сервера.">
-<title>Living Aquarium V3 — Interactive Boids</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#061d32">
+  <title>Living Aquarium V5 Evolution</title>
+  <style>
+    *{box-sizing:border-box}html,body{height:100%;margin:0}body{display:grid;place-items:center;background:radial-gradient(circle at 50% 20%,#0b5274,#031421 72%);color:#eafcff;font-family:system-ui,sans-serif}main{text-align:center;padding:32px}.fish{font-size:64px;animation:swim 1.5s ease-in-out infinite alternate}.bar{width:min(340px,76vw);height:8px;margin:22px auto;border-radius:99px;background:#ffffff1c;overflow:hidden}.bar:after{content:"";display:block;height:100%;width:45%;border-radius:inherit;background:#58d9ff;animation:load 1.1s ease-in-out infinite alternate}.error{max-width:680px;white-space:pre-wrap;color:#ffd4d4}@keyframes swim{to{transform:translateX(36px)}}@keyframes load{to{transform:translateX(125%)}}
+  </style>
 </head>
 <body>
-<canvas id="aquarium" aria-label="Интерактивный симулятор аквариума"></canvas>
-<div class="loading" id="loading">
- <div class="loader-card glass">
-  <span class="loader-fish" id="loaderFish">🐠</span>
-  <b id="loaderTitle">Заселяем аквариум</b>
-  <span id="loaderMessage">Подготавливаем ассеты…</span>
-  <div class="progress"><i id="loaderBar"></i></div>
-  <div class="loader-actions"><button id="retryLoad">↻ Повторить</button></div>
- </div>
-</div>
-<div class="ui">
- <header class="topbar">
-  <section class="brand glass"><span class="brand-icon">🌊</span><div><h1>Living Aquarium <span class="version-badge">V3</span></h1><p>реалистичный Boids • живые ассеты • запуск без сервера</p></div></section>
-  <section class="stats glass"><div class="stat">Рыбки<b id="fishCount">0</b></div><div class="stat">Хищник<b id="predatorState">охота</b></div><div class="stat">FPS<b id="fps">60</b></div></section>
- </header>
- <div class="toast" id="toast"></div>
- <div class="paused-label glass" id="pausedLabel">⏸️ ПАУЗА</div>
- <aside class="panel glass" id="panel">
-  <h2>⚙️ Настройки экосистемы</h2><p class="panel-subtitle">Все параметры автоматически сохраняются в браузере.</p>
-  <div class="control"><label>Разделение <output id="sepOut"></output></label><input id="separation" type="range" min="0" max="3" step=".1"></div>
-  <div class="control"><label>Выравнивание <output id="aliOut"></output></label><input id="alignment" type="range" min="0" max="3" step=".1"></div>
-  <div class="control"><label>Сплочение <output id="cohOut"></output></label><input id="cohesion" type="range" min="0" max="3" step=".1"></div>
-  <div class="control"><label>Скорость <output id="speedOut"></output></label><input id="speed" type="range" min=".45" max="1.7" step=".05"></div>
-  <div class="control"><label>Пузырьки <output id="bubbleOut"></output></label><input id="bubbleRate" type="range" min=".2" max="2.6" step=".1"></div>
-  <div class="control"><label>Громкость <output id="volumeOut"></output></label><input id="volume" type="range" min="0" max="1" step=".05"></div>
-  <div class="checks"><label class="check"><input id="sound" type="checkbox"> Звук воды</label><label class="check"><input id="caustics" type="checkbox"> Каустика</label></div>
-  <div class="panel-actions"><button id="save">💾 Сохранить</button><button id="reset">↺ Сбросить</button></div>
-  <div class="key-help"><kbd>Space</kbd> пауза · <kbd>F</kbd> корм · <kbd>A</kbd> рыбка · <kbd>N</kbd> ночь · <kbd>M</kbd> звук · <kbd>S</kbd> настройки</div>
- </aside>
- <nav class="dock glass" aria-label="Управление аквариумом">
-  <button id="feed">🍽️ Покормить</button><button id="add">🐟 Добавить</button><button id="pause" aria-pressed="false">⏸️ Пауза</button><button id="night" aria-pressed="false">🌙 Ночь</button><button id="soundBtn" aria-pressed="false">🔇 Звук</button><button id="fullscreen" class="icon-only" title="Полный экран" aria-label="Полный экран">⛶</button><button id="settings" class="settings-button" aria-pressed="false" aria-label="Настройки">⚙️</button>
- </nav>
- <div class="hint">Кликните по воде — рыбки на 2 секунды разбегутся от точки</div>
- <div class="local-badge" id="localBadge">✅ Локальный режим: сервер не требуется</div>
-</div>
-<script src="assets/manifest.js"></script>
-<script src="app.js"></script>
+  <main id="runtime-status" role="status" aria-live="polite">
+    <div class="fish">🐠</div>
+    <h1>Living Aquarium V5 Evolution</h1>
+    <p>Подготавливаем живую экосистему…</p>
+    <div class="bar"></div>
+  </main>
+  <script>window.__AQ_PAYLOAD=[];</script>
+  <script src="runtime/chunk-00.js"></script>
+  <script src="runtime/chunk-01a.js"></script>
+  <script src="runtime/chunk-01b.js"></script>
+  <script src="runtime/chunk-01c.js"></script>
+  <script src="runtime/chunk-01d.js"></script>
+  <script src="runtime/chunk-01e.js"></script>
+  <script src="runtime/chunk-01f.js"></script>
+  <script src="runtime/chunk-01g.js"></script>
+  <script src="runtime/chunk-01h.js"></script>
+  <script src="runtime/chunk-02.js"></script>
+  <script src="runtime/chunk-03.js"></script>
+  <script src="bootstrap.js"></script>
 </body>
 </html>

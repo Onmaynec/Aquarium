@@ -1,0 +1,25 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check bootstrap.js
+      - run: node --check service-worker.js
+      - run: node --check assets/manifest.js
+      - run: node tests/payload-test.js
+      - run: |
+          test "$(cat VERSION)" = '5.0.0'
+          grep -q 'Living Aquarium V5 Evolution' README.md
+          test -f assets/icon-192.png
+          test -f assets/icon-512.png
