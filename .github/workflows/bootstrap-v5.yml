@@ -1,0 +1,113 @@
+name: Materialize Aquarium V5
+
+on:
+  push:
+    branches: [agent/aquarium-v5-evolution]
+    paths:
+      - '.bootstrap/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify and extract source payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .bootstrap/payload.part* > /tmp/aquarium-v5.b64
+          echo 'c3a608f8e79032b98df3bd3cca7daefd1e49b1b412ec412150cd97007adedc4f  /tmp/aquarium-v5.b64' | sha256sum -c -
+          base64 -d /tmp/aquarium-v5.b64 > /tmp/aquarium-v5.tar.gz
+          echo 'cd21e15ed4a6e0d0432ebe220f8fc7152f1ce0633d59401ba7427aefd55f47e5  /tmp/aquarium-v5.tar.gz' | sha256sum -c -
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.bootstrap' -exec rm -rf {} +
+          tar -xzf /tmp/aquarium-v5.tar.gz
+
+      - name: Restore embedded source assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, json, struct, zlib
+          from pathlib import Path
+
+          root = Path('.')
+          raw = (root / 'assets/manifest.js').read_text(encoding='utf-8').strip()
+          prefix = 'window.AQUARIUM_MANIFEST='
+          if not raw.startswith(prefix):
+              raise SystemExit('Invalid embedded manifest prefix')
+          embedded = json.loads(raw[len(prefix):].rstrip(';'))
+          external = json.loads((root / 'assets/manifest.json').read_text(encoding='utf-8'))
+
+          def decode_data_uri(uri, target):
+              if not isinstance(uri, str) or not uri.startswith('data:'):
+                  return
+              header, payload = uri.split(',', 1)
+              data = base64.b64decode(payload) if ';base64' in header else payload.encode('utf-8')
+              path = root / target
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_bytes(data)
+
+          for key, value in embedded['atlases'].items():
+              decode_data_uri(value['file'], external['atlases'][key]['file'])
+          for key, value in embedded['images'].items():
+              decode_data_uri(value, external['images'][key])
+          for key, value in embedded['audio'].items():
+              decode_data_uri(value, external['audio'][key])
+
+          def write_png(size, path):
+              rows = []
+              for y in range(size):
+                  row = bytearray([0])
+                  for x in range(size):
+                      t = y / max(1, size - 1)
+                      r, g, b, a = int(4 + 4*t), int(44 - 20*t), int(74 - 35*t), 255
+                      cx, cy = size * .49, size * .50
+                      rx, ry = size * .26, size * .13
+                      body = ((x-cx)/rx)**2 + ((y-cy)/ry)**2 <= 1
+                      tail = x < size*.27 and abs(y-cy) < (size*.27-x)*.62
+                      eye = (x-size*.60)**2 + (y-size*.46)**2 <= (size*.025)**2
+                      bubble = (x-size*.73)**2 + (y-size*.25)**2 <= (size*.055)**2
+                      if body: r,g,b = 55,211,255
+                      if tail: r,g,b = 255,191,71
+                      if eye: r,g,b = 3,18,30
+                      if bubble: r,g,b,a = 205,248,255,205
+                      row.extend((r,g,b,a))
+                  rows.append(bytes(row))
+              data = b''.join(rows)
+              def chunk(kind, payload):
+                  return struct.pack('>I', len(payload)) + kind + payload + struct.pack('>I', zlib.crc32(kind + payload) & 0xffffffff)
+              png = b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', size, size, 8, 6, 0, 0, 0)) + chunk(b'IDAT', zlib.compress(data, 9)) + chunk(b'IEND', b'')
+              Path(path).write_bytes(png)
+
+          write_png(192, root / 'assets/icon-192.png')
+          write_png(512, root / 'assets/icon-512.png')
+          PY
+
+      - name: Validate materialized project
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .bootstrap
+          test "$(cat VERSION)" = '5.0.0'
+          node --check app.js
+          node --check assets/manifest.js
+          node --check service-worker.js
+          node tests/smoke-test.js
+          node tests/integrity-test.js
+
+      - name: Commit V5 snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Release Living Aquarium V5 Evolution'
+          git push origin HEAD:agent/aquarium-v5-evolution
