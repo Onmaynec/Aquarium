@@ -22,10 +22,11 @@ jobs:
           import base64,re,tarfile,gzip,io,shutil
           from pathlib import Path
           root=Path('.')
-          payload=''.join(re.search(r"push\('([A-Za-z0-9+/=]+)'\)", (root/'runtime'/f'chunk-0{i}.js').read_text()).group(1) for i in range(4))
+          names=['chunk-00.js','chunk-01a.js','chunk-01b.js','chunk-01c.js','chunk-01d.js','chunk-01e.js','chunk-01f.js','chunk-01g.js','chunk-01h.js','chunk-02.js','chunk-03.js']
+          payload=''.join(re.search(r"push\('([A-Za-z0-9+/=]+)'\)", (root/'runtime'/name).read_text()).group(1) for name in names)
           stage=Path('dist/stage')
           stage.mkdir(parents=True,exist_ok=True)
-          with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(payload)))) as tar: tar.extractall(stage)
+          with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(payload)))) as tar: tar.extractall(stage,filter='data')
           assets=stage/'assets'; assets.mkdir(exist_ok=True)
           for item in (root/'assets').iterdir():
               target=assets/item.name

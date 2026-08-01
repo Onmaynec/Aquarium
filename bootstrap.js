@@ -3,7 +3,7 @@
   const status=document.querySelector('#runtime-status');
   const fail=(error)=>{console.error(error);status.className='error';status.textContent='Не удалось запустить Aquarium V5.\n\n'+(error?.message||error)};
   try{
-    if(!Array.isArray(window.__AQ_PAYLOAD)||window.__AQ_PAYLOAD.length!==4)throw new Error('Повреждён комплект runtime-данных.');
+    if(!Array.isArray(window.__AQ_PAYLOAD)||window.__AQ_PAYLOAD.length!==11)throw new Error('Повреждён комплект runtime-данных.');
     if(typeof DecompressionStream==='undefined')throw new Error('Браузер не поддерживает DecompressionStream. Используйте актуальный Chrome, Edge или Firefox.');
     const base64=window.__AQ_PAYLOAD.join('');
     const binary=atob(base64);
