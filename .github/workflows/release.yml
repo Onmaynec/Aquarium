@@ -1,0 +1,51 @@
+name: Publish V5 Release
+on:
+  push:
+    tags: ['v5.0.0']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate payload
+        run: node tests/payload-test.js
+      - name: Build release archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,re,tarfile,gzip,io,shutil
+          from pathlib import Path
+          root=Path('.')
+          payload=''.join(re.search(r"push\('([A-Za-z0-9+/=]+)'\)", (root/'runtime'/f'chunk-0{i}.js').read_text()).group(1) for i in range(4))
+          stage=Path('dist/stage')
+          stage.mkdir(parents=True,exist_ok=True)
+          with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(payload)))) as tar: tar.extractall(stage)
+          assets=stage/'assets'; assets.mkdir(exist_ok=True)
+          for item in (root/'assets').iterdir():
+              target=assets/item.name
+              if item.is_dir(): shutil.copytree(item,target,dirs_exist_ok=True)
+              else: shutil.copy2(item,target)
+          PY
+          mkdir -p dist/portable dist/source
+          cp -a dist/stage/. dist/portable/
+          cp -a dist/stage/. dist/source/
+          rm -rf dist/portable/.github dist/portable/tests
+          (cd dist/portable && zip -qr ../Aquarium-V5.0.0-Evolution-Portable.zip .)
+          (cd dist/source && zip -qr ../Aquarium-V5.0.0-Evolution-Source.zip .)
+          cd dist
+          sha256sum Aquarium-V5.0.0-Evolution-Portable.zip Aquarium-V5.0.0-Evolution-Source.zip > Aquarium-V5.0.0-SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Living Aquarium V5 Evolution
+          body_path: RELEASE_NOTES.md
+          generate_release_notes: true
+          files: |
+            dist/Aquarium-V5.0.0-Evolution-Portable.zip
+            dist/Aquarium-V5.0.0-Evolution-Source.zip
+            dist/Aquarium-V5.0.0-SHA256SUMS.txt
