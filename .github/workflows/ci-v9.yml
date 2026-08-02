@@ -1,0 +1,61 @@
+name: CI V9
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v9.html'
+      - 'bootstrap-v9.js'
+      - 'v9-restoration.js'
+      - 'VERSION-V9'
+      - 'README-V9.md'
+      - 'CHANGELOG-V9.md'
+      - 'RELEASE_NOTES-V9.md'
+      - 'manifest-v9.webmanifest'
+      - 'service-worker-v9.js'
+      - 'tests/restoration-center-test.js'
+      - 'tests/v9-runtime-test.js'
+      - 'scripts/build-v9-release.py'
+      - '.github/workflows/ci-v9.yml'
+      - '.github/workflows/release-v9.yml'
+      - '.github/workflows/tag-v9.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'v9.html'
+      - 'bootstrap-v9.js'
+      - 'v9-restoration.js'
+      - 'VERSION-V9'
+      - 'tests/restoration-center-test.js'
+      - 'tests/v9-runtime-test.js'
+permissions:
+  contents: read
+jobs:
+  validate-v9:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check bootstrap-v9.js
+      - run: node --check v9-restoration.js
+      - run: node --check service-worker-v9.js
+      - run: node tests/deep-sea-overlay-test.js
+      - run: node tests/genetics-lab-test.js
+      - run: node tests/restoration-center-test.js
+      - run: node tests/v9-runtime-test.js
+      - run: python3 scripts/build-v9-release.py dist/v9-stage
+      - run: |
+          test "$(cat VERSION-V9)" = '9.0.0'
+          grep -q 'Reef Restoration Center' README-V9.md
+          test -f dist/v9-stage/index.html
+          test -f dist/v9-stage/v7-expedition.js
+          test -f dist/v9-stage/v8-genetics.js
+          test -f dist/v9-stage/v9-restoration.js
+          cd dist/v9-stage
+          node tests/smoke-test.js
+          node tests/integrity-test.js
+          node tests/ocean-lab-test.js
+          node tests/deep-sea-overlay-test.js
+          node tests/genetics-lab-test.js
+          node tests/restoration-center-test.js
