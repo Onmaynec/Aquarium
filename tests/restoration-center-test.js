@@ -1,0 +1,13 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..'),code=fs.readFileSync(path.join(root,'v9-restoration.js'),'utf8');
+new vm.Script(code,{filename:'v9-restoration.js'});
+for(const marker of ['Reef Restoration Center','aquarium-v9-restoration','lagoon','garden','shelf','bluehole','claimLegacy','window.AquariumV9','V8 → V9'])if(!code.includes(marker))throw new Error(`Missing V9 marker: ${marker}`);
+const sectors=[...code.matchAll(/\n (lagoon|garden|shelf|bluehole):\{/g)].map(x=>x[1]);
+if(new Set(sectors).size!==4)throw new Error('Expected four restoration sectors');
+const corals=[...code.matchAll(/(branch|fan|brain|kelp):\{name:/g)].map(x=>x[1]);
+if(new Set(corals).size!==4)throw new Error('Expected four nursery cultures');
+const achievements=[...code.matchAll(/\['(nursery|guardian|network|century|resilient)'/g)].map(x=>x[1]);
+if(new Set(achievements).size!==5)throw new Error('Expected five restoration achievements');
+if(!code.includes("e.key==='r'")||!code.includes("e.key==='R'"))throw new Error('Hotkey R is missing');
+console.log(JSON.stringify({ok:true,sectors:4,cultures:4,achievements:5,storage:'aquarium-v9-restoration'},null,2));
