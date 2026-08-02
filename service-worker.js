@@ -1,5 +1,57 @@
-const CACHE='aquarium-v5-runtime-1';
-const CORE=['./','./index.html','./bootstrap.js','./manifest.webmanifest','./runtime/chunk-00.js','./runtime/chunk-01a.js','./runtime/chunk-01b.js','./runtime/chunk-01c.js','./runtime/chunk-01d.js','./runtime/chunk-01e.js','./runtime/chunk-01f.js','./runtime/chunk-01g.js','./runtime/chunk-01h.js','./runtime/chunk-02.js','./runtime/chunk-03.js','./assets/manifest.js','./assets/icon-192.png','./assets/icon-512.png'];
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;event.respondWith(caches.match(event.request).then(hit=>hit||fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match('./index.html'))))});
+const CACHE_NAME = 'living-aquarium-v6.0.0';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './manifest.webmanifest',
+  './assets/manifest.js',
+  './assets/icon.svg',
+  './assets/icon-192.png',
+  './assets/icon-512.png'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put('./index.html', response.clone()));
+          return response;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
+        if (response.ok && new URL(request.url).origin === self.location.origin) {
+          caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
+        }
+        return response;
+      });
+    })
+  );
+});
