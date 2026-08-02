@@ -1,0 +1,29 @@
+name: Finalize V8 Release
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  finalize-v8:
+    if: >-
+      github.event.pull_request.head.ref == 'agent/finalize-v8-release' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate and publish V8
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/finalize-v8.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aquarium-v8-release-assets
+          path: dist/v8-release/*
+          if-no-files-found: error
