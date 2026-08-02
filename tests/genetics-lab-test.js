@@ -1,0 +1,13 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const code=fs.readFileSync(path.join(root,'v8-genetics.js'),'utf8');
+new vm.Script(code,{filename:'v8-genetics.js'});
+const required=['Marine Genetics Lab','aquarium-v8-genetics','color','fins','size','glow','resist','reef','koi','abyss','thermal','lunar','prism','window.AquariumV8','claimDeepBonus','V7'];
+for(const marker of required)if(!code.includes(marker))throw new Error(`Missing V8 marker: ${marker}`);
+const phenotypes=[...code.matchAll(/\['(luminous|prism|veil|giant|guardian|moon|thermal|wild)'/g)].map(x=>x[1]);
+if(new Set(phenotypes).size!==8)throw new Error('Expected eight phenotypes');
+const achievements=[...code.matchAll(/\['(sequence|breeder|mutation|catalog|master)'/g)].map(x=>x[1]);
+if(new Set(achievements).size!==5)throw new Error('Expected five genetics achievements');
+if(!code.includes("e.key==='g'")||!code.includes("e.key==='G'"))throw new Error('Hotkey G is missing');
+console.log(JSON.stringify({ok:true,loci:5,lines:6,phenotypes:8,achievements:5,storage:'aquarium-v8-genetics'},null,2));
