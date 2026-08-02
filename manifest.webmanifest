@@ -1,19 +1,42 @@
 {
   "id": "./",
-  "name": "Living Aquarium V5 Evolution",
-  "short_name": "Aquarium V5",
+  "name": "Living Aquarium V6 Ocean Lab",
+  "short_name": "Aquarium V6",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#031425",
   "theme_color": "#041b31",
-  "description": "Автономный интерактивный симулятор живого аквариума с генетикой, поколениями и событиями.",
-  "categories": ["games", "entertainment", "education"],
+  "description": "Автономный симулятор живого аквариума с биомами, научными миссиями, телеметрией и умным смотрителем.",
+  "categories": [
+    "games",
+    "entertainment",
+    "education"
+  ],
   "icons": [
-    {"src":"assets/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"assets/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"},
-    {"src":"assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }

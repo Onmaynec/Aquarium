@@ -19,7 +19,7 @@ jobs:
       - run: node --check assets/manifest.js
       - run: node tests/payload-test.js
       - run: |
-          test "$(cat VERSION)" = '5.0.0'
-          grep -q 'Living Aquarium V5 Evolution' README.md
+          test "$(cat VERSION)" = '6.0.0'
+          grep -q 'Living Aquarium V6 Ocean Lab' README.md
           test -f assets/icon-192.png
           test -f assets/icon-512.png

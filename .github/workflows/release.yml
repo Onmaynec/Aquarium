@@ -1,7 +1,7 @@
-name: Publish V5 Release
+name: Publish V6 Release
 on:
   push:
-    tags: ['v5.0.0']
+    tags: ['v6.0.0']
 permissions:
   contents: write
 jobs:
@@ -18,35 +18,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
+          python3 - <<'PY2'
           import base64,re,tarfile,gzip,io,shutil
           from pathlib import Path
           root=Path('.')
           names=['chunk-00.js','chunk-01a.js','chunk-01b.js','chunk-01c.js','chunk-01d.js','chunk-01e.js','chunk-01f.js','chunk-01g.js','chunk-01h.js','chunk-02.js','chunk-03.js']
           payload=''.join(re.search(r"push\('([A-Za-z0-9+/=]+)'\)", (root/'runtime'/name).read_text()).group(1) for name in names)
-          stage=Path('dist/stage')
-          stage.mkdir(parents=True,exist_ok=True)
+          stage=Path('dist/stage'); stage.mkdir(parents=True,exist_ok=True)
           with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(payload)))) as tar: tar.extractall(stage,filter='data')
-          assets=stage/'assets'; assets.mkdir(exist_ok=True)
-          for item in (root/'assets').iterdir():
-              target=assets/item.name
-              if item.is_dir(): shutil.copytree(item,target,dirs_exist_ok=True)
-              else: shutil.copy2(item,target)
-          PY
+          for folder in ['assets','media']:
+              source=root/folder
+              if source.exists(): shutil.copytree(source,stage/folder,dirs_exist_ok=True)
+          PY2
           mkdir -p dist/portable dist/source
+          cp tests/integrity-test.js dist/stage/tests/integrity-test.js
           cp -a dist/stage/. dist/portable/
           cp -a dist/stage/. dist/source/
           rm -rf dist/portable/.github dist/portable/tests
-          (cd dist/portable && zip -qr ../Aquarium-V5.0.0-Evolution-Portable.zip .)
-          (cd dist/source && zip -qr ../Aquarium-V5.0.0-Evolution-Source.zip .)
+          (cd dist/portable && zip -qr ../Aquarium-V6.0.0-Ocean-Lab-Portable.zip .)
+          (cd dist/source && zip -qr ../Aquarium-V6.0.0-Ocean-Lab-Source.zip .)
           cd dist
-          sha256sum Aquarium-V5.0.0-Evolution-Portable.zip Aquarium-V5.0.0-Evolution-Source.zip > Aquarium-V5.0.0-SHA256SUMS.txt
+          sha256sum Aquarium-V6.0.0-Ocean-Lab-Portable.zip Aquarium-V6.0.0-Ocean-Lab-Source.zip > Aquarium-V6.0.0-SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
         with:
-          name: Living Aquarium V5 Evolution
+          name: Living Aquarium V6 Ocean Lab
           body_path: RELEASE_NOTES.md
           generate_release_notes: true
           files: |
-            dist/Aquarium-V5.0.0-Evolution-Portable.zip
-            dist/Aquarium-V5.0.0-Evolution-Source.zip
-            dist/Aquarium-V5.0.0-SHA256SUMS.txt
+            dist/Aquarium-V6.0.0-Ocean-Lab-Portable.zip
+            dist/Aquarium-V6.0.0-Ocean-Lab-Source.zip
+            dist/Aquarium-V6.0.0-SHA256SUMS.txt
