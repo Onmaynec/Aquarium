@@ -1,0 +1,41 @@
+name: Release V9
+on:
+  push:
+    tags: ['v9.0.0']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tests/deep-sea-overlay-test.js
+      - run: node tests/genetics-lab-test.js
+      - run: node tests/restoration-center-test.js
+      - run: node tests/v9-runtime-test.js
+      - run: python3 scripts/build-v9-release.py dist/stage
+      - name: Build archives
+        run: |
+          mkdir -p dist/portable dist/source
+          cp -a dist/stage/. dist/portable/
+          cp -a dist/stage/. dist/source/
+          rm -rf dist/portable/tests dist/portable/scripts
+          (cd dist/portable && zip -Xqr ../Aquarium-V9.0.0-Reef-Restoration-Center-Portable.zip .)
+          (cd dist/source && zip -Xqr ../Aquarium-V9.0.0-Reef-Restoration-Center-Source.zip .)
+          (cd dist && sha256sum Aquarium-V9.0.0-Reef-Restoration-Center-Portable.zip Aquarium-V9.0.0-Reef-Restoration-Center-Source.zip > Aquarium-V9.0.0-SHA256SUMS.txt)
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v9.0.0 \
+            dist/Aquarium-V9.0.0-Reef-Restoration-Center-Portable.zip \
+            dist/Aquarium-V9.0.0-Reef-Restoration-Center-Source.zip \
+            dist/Aquarium-V9.0.0-SHA256SUMS.txt \
+            --title 'Living Aquarium V9 Reef Restoration Center' \
+            --notes-file RELEASE_NOTES-V9.md \
+            --verify-tag
