@@ -1,0 +1,60 @@
+name: Publish V7 Release
+on:
+  push:
+    tags: ['v7.0.0']
+permissions:
+  contents: write
+jobs:
+  release-v7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate V7
+        run: node tests/v7-runtime-test.js
+      - name: Build release archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,gzip,io,re,shutil,tarfile
+          from pathlib import Path
+          root=Path('.')
+          names=['chunk-00.js','chunk-01a.js','chunk-01b.js','chunk-01c.js','chunk-01d.js','chunk-01e.js','chunk-01f.js','chunk-01g.js','chunk-01h.js','chunk-02.js','chunk-03.js']
+          payload=''.join(re.search(r"push\('([A-Za-z0-9+/=]+)'\)",(root/'runtime'/name).read_text()).group(1) for name in names)
+          stage=Path('dist/stage');stage.mkdir(parents=True,exist_ok=True)
+          with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(payload)))) as archive:
+              archive.extractall(stage,filter='data')
+          for folder in ['assets','media']:
+              source=root/folder
+              if source.exists():shutil.copytree(source,stage/folder,dirs_exist_ok=True)
+          shutil.copy2(root/'v7-expedition.js',stage/'v7-expedition.js')
+          shutil.copy2(root/'manifest-v7.webmanifest',stage/'manifest.webmanifest')
+          shutil.copy2(root/'service-worker-v7.js',stage/'service-worker.js')
+          for name in ['README-V7.md','CHANGELOG-V7.md','RELEASE_NOTES_V7.md','VERSION-V7']:
+              shutil.copy2(root/name,stage/name)
+          html=(stage/'index.html').read_text()
+          html=re.sub(r'<title>[^<]*</title>','<title>Living Aquarium V7 Deep Sea Expedition</title>',html)
+          html=html.replace('<script src="app.js"></script>','<script src="app.js"></script>\n  <script src="v7-expedition.js"></script>')
+          (stage/'index.html').write_text(html)
+          PY
+          mkdir -p dist/portable dist/source
+          cp -a dist/stage/. dist/portable/
+          cp -a dist/stage/. dist/source/
+          cp tests/deep-sea-overlay-test.js tests/v7-runtime-test.js dist/source/tests/
+          rm -rf dist/portable/.github dist/portable/tests
+          (cd dist/portable && zip -qr ../Aquarium-V7.0.0-Deep-Sea-Expedition-Portable.zip .)
+          (cd dist/source && zip -qr ../Aquarium-V7.0.0-Deep-Sea-Expedition-Source.zip .)
+          cd dist
+          sha256sum Aquarium-V7.0.0-Deep-Sea-Expedition-Portable.zip Aquarium-V7.0.0-Deep-Sea-Expedition-Source.zip > Aquarium-V7.0.0-SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Living Aquarium V7 Deep Sea Expedition
+          body_path: RELEASE_NOTES_V7.md
+          generate_release_notes: true
+          files: |
+            dist/Aquarium-V7.0.0-Deep-Sea-Expedition-Portable.zip
+            dist/Aquarium-V7.0.0-Deep-Sea-Expedition-Source.zip
+            dist/Aquarium-V7.0.0-SHA256SUMS.txt
