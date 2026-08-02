@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Living Aquarium V6 Ocean Lab",
-  "short_name": "Aquarium V6",
+  "name": "Living Aquarium V7 Deep Sea Expedition",
+  "short_name": "Aquarium V7",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
@@ -13,7 +13,7 @@
   "orientation": "any",
   "background_color": "#031425",
   "theme_color": "#041b31",
-  "description": "Автономный симулятор живого аквариума с биомами, научными миссиями, телеметрией и умным смотрителем.",
+  "description": "Автономный симулятор живого аквариума с глубоководными экспедициями, сонаром, научными образцами и Ocean Lab.",
   "categories": [
     "games",
     "entertainment",

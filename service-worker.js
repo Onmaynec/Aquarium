@@ -1,4 +1,4 @@
-const CACHE_NAME = 'living-aquarium-v6.0.0';
+const CACHE_NAME = 'living-aquarium-v7.0.0';
 const APP_SHELL = [
   './',
   './index.html',
