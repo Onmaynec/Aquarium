@@ -1,0 +1,24 @@
+name: CI V7 Deep Sea
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate-v7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check bootstrap-v7.js
+      - run: node --check v7-expedition.js
+      - run: node tests/deep-sea-overlay-test.js
+      - run: node tests/v7-runtime-test.js
+      - run: |
+          test "$(cat VERSION-V7)" = '7.0.0'
+          grep -q 'Living Aquarium V7' README-V7.md
+          grep -q 'Deep Sea Expedition' v7.html

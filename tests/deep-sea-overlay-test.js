@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const code=fs.readFileSync(path.join(root,'v7-expedition.js'),'utf8');
+new vm.Script(code,{filename:'v7-expedition.js'});
+const required=['Deep Sea Expedition','aquarium-v7-deep-sea','twilight','canyon','abyss','thermal','sonarDives','Ocean Lab','V6 → V7','window.AquariumV7'];
+for(const marker of required)if(!code.includes(marker))throw new Error(`Missing V7 marker: ${marker}`);
+const achievements=[...code.matchAll(/\['(first|sonar|collector|abyss|vents)'/g)].map(x=>x[1]);
+if(new Set(achievements).size!==5)throw new Error('Expected five Deep Sea achievements');
+if(!code.includes("e.key==='x'")||!code.includes("e.key==='X'"))throw new Error('Hotkey X is missing');
+console.log(JSON.stringify({ok:true,zones:4,achievements:5,storage:'aquarium-v7-deep-sea'},null,2));

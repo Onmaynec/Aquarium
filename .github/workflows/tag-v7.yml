@@ -1,0 +1,31 @@
+name: Tag V7 Release
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - VERSION-V7
+      - v7-expedition.js
+      - v7.html
+permissions:
+  contents: write
+jobs:
+  tag-v7:
+    if: github.repository == 'Onmaynec/Aquarium'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create v7.0.0 tag
+        run: |
+          set -euo pipefail
+          test "$(cat VERSION-V7)" = '7.0.0'
+          if git ls-remote --exit-code --tags origin refs/tags/v7.0.0 >/dev/null 2>&1; then
+            echo 'v7.0.0 already exists'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a v7.0.0 -m 'Living Aquarium V7 Deep Sea Expedition'
+          git push origin v7.0.0
