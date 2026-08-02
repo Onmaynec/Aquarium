@@ -1,0 +1,24 @@
+name: Cleanup V7 Release Automation
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  cleanup-v7:
+    if: >-
+      github.event.pull_request.head.ref == 'agent/cleanup-v7-release' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify release and remove temporary automation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/cleanup-v7.sh
