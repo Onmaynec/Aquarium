@@ -1,0 +1,26 @@
+name: Tag V9
+on:
+  push:
+    branches: [main]
+    paths: ['VERSION-V9']
+permissions:
+  contents: write
+jobs:
+  tag:
+    if: github.repository == 'Onmaynec/Aquarium'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          test "$(cat VERSION-V9)" = '9.0.0'
+          node tests/restoration-center-test.js
+          node tests/v9-runtime-test.js
+      - name: Create annotated tag
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --tags origin refs/tags/v9.0.0 >/dev/null 2>&1; then exit 0; fi
+          git tag -a v9.0.0 -m 'Living Aquarium V9 Reef Restoration Center'
+          git push origin v9.0.0
