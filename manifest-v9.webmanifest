@@ -1,0 +1,15 @@
+{
+  "name": "Living Aquarium V9 Reef Restoration Center",
+  "short_name": "Aquarium V9",
+  "description": "Автономная экосистема с Ocean Lab, глубоководными экспедициями, генетикой и восстановлением рифов.",
+  "start_url": "./v9.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#03151b",
+  "theme_color": "#075b55",
+  "lang": "ru",
+  "icons": [
+    {"src":"assets/icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"assets/icon-512.png","sizes":"512x512","type":"image/png"}
+  ]
+}
