@@ -11,7 +11,9 @@ for d in ['assets','media']:
     if (root/d).exists(): shutil.copytree(root/d,out/d,dirs_exist_ok=True)
 def cp(src,dst=None):
     dst=dst or src;p=out/dst;p.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(root/src,p)
-for src,dst in [('v7-expedition.js',None),('v8-genetics.js',None),('scripts/build-v8-release.py',None),('manifest-v8.webmanifest','manifest.webmanifest'),('service-worker-v8.js','service-worker.js'),('README-V8.md','README.md'),('CHANGELOG-V8.md','CHANGELOG.md'),('RELEASE_NOTES-V8.md','RELEASE_NOTES.md'),('VERSION-V8','VERSION'),('tests/smoke-test.js',None),('tests/integrity-test.js',None),('tests/ocean-lab-test.js',None),('tests/deep-sea-overlay-test.js',None),('tests/genetics-lab-test.js',None),('tests/v8-runtime-test.js',None)]: cp(src,dst)
+for src,dst in [('v7-expedition.js',None),('v8-genetics.js',None),('scripts/build-v8-release.py',None),('manifest-v8.webmanifest','manifest.webmanifest'),('service-worker-v8.js','service-worker.js'),('README-V8.md','README.md'),('CHANGELOG-V8.md','CHANGELOG.md'),('RELEASE_NOTES-V8.md','RELEASE_NOTES.md'),('VERSION-V8','VERSION'),('tests/deep-sea-overlay-test.js',None),('tests/genetics-lab-test.js',None),('tests/v8-runtime-test.js',None)]: cp(src,dst)
+for test in ['smoke-test.js','integrity-test.js','ocean-lab-test.js']:
+    if (root/'tests'/test).exists(): cp('tests/'+test)
 p=out/'index.html';s=p.read_text();s=re.sub(r'<title>[^<]*</title>','<title>Living Aquarium V8 Marine Genetics Lab</title>',s);s=s.replace('<script src="app.js"></script>','<script src="app.js"></script>\n<script src="v7-expedition.js"></script>\n<script src="v8-genetics.js"></script>');p.write_text(s)
 p=out/'tests/integrity-test.js';p.write_text(p.read_text().replace("webmanifest.name.includes('V6')","webmanifest.name.includes('V8')"))
 p=out/'tests/ocean-lab-test.js';p.write_text(p.read_text().replace("manifest.name==='Living Aquarium V6 Ocean Lab'","manifest.name==='Living Aquarium V8 Marine Genetics Lab'"))
