@@ -1,0 +1,23 @@
+{
+  "id": "./v10.html",
+  "name": "Living Aquarium V10 Ocean Command Center",
+  "short_name": "Aquarium V10",
+  "start_url": "./v10.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#020f19",
+  "theme_color": "#075f72",
+  "description": "Автономная океаническая экосистема с экспедициями, генетикой, восстановлением рифов и глобальным командным центром.",
+  "categories": ["games", "entertainment", "education", "simulation"],
+  "icons": [
+    {"src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+    {"src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
+  ],
+  "shortcuts": [
+    {"name": "Ocean Command Center", "short_name": "Command", "url": "./v10.html#command"},
+    {"name": "Reef Restoration", "short_name": "Restoration", "url": "./v10.html#restoration"}
+  ]
+}

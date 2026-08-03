@@ -1,0 +1,64 @@
+name: CI V10
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'v10.html'
+      - 'bootstrap-v10.js'
+      - 'v10-command.js'
+      - 'VERSION-V10'
+      - 'README-V10.md'
+      - 'CHANGELOG-V10.md'
+      - 'RELEASE_NOTES-V10.md'
+      - 'manifest-v10.webmanifest'
+      - 'service-worker-v10.js'
+      - 'tests/command-center-test.js'
+      - 'tests/v10-runtime-test.js'
+      - 'scripts/build-v10-release.py'
+      - '.github/workflows/ci-v10.yml'
+      - '.github/workflows/release-v10.yml'
+      - '.github/workflows/tag-v10.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'v10.html'
+      - 'bootstrap-v10.js'
+      - 'v10-command.js'
+      - 'VERSION-V10'
+      - 'tests/command-center-test.js'
+      - 'tests/v10-runtime-test.js'
+permissions:
+  contents: read
+jobs:
+  validate-v10:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check bootstrap-v10.js
+      - run: node --check v10-command.js
+      - run: node --check service-worker-v10.js
+      - run: node tests/deep-sea-overlay-test.js
+      - run: node tests/genetics-lab-test.js
+      - run: node tests/restoration-center-test.js
+      - run: node tests/command-center-test.js
+      - run: node tests/v10-runtime-test.js
+      - run: python3 scripts/build-v10-release.py dist/v10-stage
+      - run: |
+          test "$(cat VERSION-V10)" = '10.0.0'
+          grep -q 'Ocean Command Center' README-V10.md
+          test -f dist/v10-stage/index.html
+          test -f dist/v10-stage/v7-expedition.js
+          test -f dist/v10-stage/v8-genetics.js
+          test -f dist/v10-stage/v9-restoration.js
+          test -f dist/v10-stage/v10-command.js
+          cd dist/v10-stage
+          node tests/smoke-test.js
+          node tests/integrity-test.js
+          node tests/ocean-lab-test.js
+          node tests/deep-sea-overlay-test.js
+          node tests/genetics-lab-test.js
+          node tests/restoration-center-test.js
+          node tests/command-center-test.js
